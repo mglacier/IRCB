@@ -1,0 +1,15 @@
+@article{FERNANDEZPIERNA200894,
+title = {Soil parameter quantification by NIRS as a Chemometric challenge at ‘Chimiométrie 2006’},
+journal = {Chemometrics and Intelligent Laboratory Systems},
+volume = {91},
+number = {1},
+pages = {94-98},
+year = {2008},
+note = {Selected papers presented at the Chemometrics Congress “CHIMIOMETRIE 2006” Paris, France, 30 November - 1 December 2006},
+issn = {0169-7439},
+doi = {https://doi.org/10.1016/j.chemolab.2007.06.007},
+url = {https://www.sciencedirect.com/science/article/pii/S0169743907001190},
+author = {Juan Antonio {Fernández Pierna} and Pierre Dardenne},
+keywords = {Chemometrics, Challenge, Soil quantification, NIR},
+abstract = {For the third consecutive year and due to the success of the chemometric contests organized within the framework of previous congresses, another data set has been proposed for the organisation committee at the ‘Chimiométrie 2006’ meeting (http://www.chimiometrie.org/) held in Paris, France (30th November and 1st December). As in the first contest organized in 2004 this data set was selected in order to test the ability of the participants for using regression methods based on NIR data. The data set consists on three different properties characterizing soils coming from the Walloon region in Belgium. This year, unlike previous contests, the data have been not modified by the authors. Only three participants decided to play with the proposed data and presented their own approaches during the conference. As last year's, this paper summarizes the approaches presented during the meeting by the participants and the authors.}
+}
