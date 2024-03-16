@@ -47,7 +47,7 @@ y_test = load_fp(base_path + "y_test.xlsx")
 
 
 model = regression_model_builder(x_cal = x_cal, x_test = x_test, y_cal = y_cal, y_test = y_test)
-model.generate_xblock(max_range = 10000)
+model.generate_xblock()
 model.regression_fit(criteria = 'R2')
 model.reduce_xblock(percentage = 0.0005)
 
