@@ -51,7 +51,7 @@ y_test = load_fp(base_path + "nit/y_test.xlsx")
 
 
 nitrogen_model = regression_model_builder(x_cal = x_cal, x_test = x_test, y_cal = y_cal, y_test = y_test)
-nitrogen_model.generate_xblock()
+nitrogen_model.generate_xblock(max_range = 10000)
 nitrogen_model.regression_fit(criteria = 'R2')
 nitrogen_model.reduce_xblock(percentage = 0.02)
 nitrogen_model.predictive_model(ml_type='rf')

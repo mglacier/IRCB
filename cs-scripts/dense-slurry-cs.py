@@ -38,7 +38,7 @@ x_comb, y_comb = load_fp(base_path + "Raman_x_block.csv"), load_fp(base_path + "
 
 
 nuc_solid_model = regression_model_builder(x_comb = x_comb, y_comb = y_comb)
-nuc_solid_model.generate_xblock()
+nuc_solid_model.generate_xblock(max_range = 10000)
 nuc_solid_model.split_kfold(n_splits = 10)
 nuc_solid_model.regression_fit(criteria='R2')
 nuc_solid_model.reduce_xblock(percentage = .001)
