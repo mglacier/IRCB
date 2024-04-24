@@ -34,7 +34,7 @@ import time
 
 
 from matplotlib.figure import Figure
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 
 import numpy as np

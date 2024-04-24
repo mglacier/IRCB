@@ -15,6 +15,11 @@ Created by Matthew Glace, 2023
 
 import numpy as np
 import concurrent.futures
+import os
+
+# Reserve one core for background processes
+max_workers = max(1, os.cpu_count() - 1)
+
 
 
 # Trapezoidal Summation from baseline
@@ -75,7 +80,7 @@ def feature_matrix2(data, max_range, batch_size = 20000):
 
     
     # Initialize the process pool
-    with concurrent.futures.ProcessPoolExecutor(max_workers=30) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         futures = []
 
         # Submit tasks for each batch
@@ -126,7 +131,7 @@ def feature_matrix2b(cal_data, et_data, max_range, batch_size = 20000):
 
     
     # Initialize the process pool
-    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         futures = []
 
         # Submit tasks for each batch

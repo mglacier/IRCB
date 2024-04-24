@@ -11,7 +11,7 @@ Created on Tue Apr  9 11:50:45 2024
 import sys
 
 
-# sys.path.append('/Users/glacier/Documents/GitHub/IRCB')  # Change for your System
+sys.path.append('C:\\Users\\spect\\Desktop\\PatternWave\\IRCB - Public\\IRCB')     ################## Change this line for your system
 
 
 from reg_builder import load_fp
@@ -454,61 +454,6 @@ nuc_solid_model.split_kfold(n_splits = 10)
 nuc_solid_model.no_ircb(n_splits = 10)
 nuc_solid_model.predictive_model(ml_type='xgb')
 results_msc = nuc_solid_model.results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# k_y_cal = nuc_solid_model.k_y_cal
-# k_y_test = nuc_solid_model.k_y_test
-# k_x_cal = nuc_solid_model.k_x_cal
-# k_x_test = nuc_solid_model.k_x_test
-
-
-
-
-
-
-
-# cs3_results_no_IRCB = []
-
-
-# for i in range (0,5):
-#     cs3_results_no_IRCB.append(ml_xgb(x_cal.T,x_test.T,y_cal[:,i],y_test[:,i], hyperparams== {
-#         'n_estimators': 100, 
-#         'max_depth': 3
-#         }))
-
-
-
-
-# cs1_results_svg = []
-# for i in range (0,5):
-#     cs1_results_svg.append(ml_elr(svg(x_cal.T, window_length, polyorder),svg(x_test.T, window_length, polyorder),y_cal[:,i],y_test[:,i]))
-
-
-
-# cs1_results_2nd_deriv = []
-# for i in range(0, 5):
-#     cs1_results_2nd_deriv.append(ml_elr(numerical_second_derivative(x_cal.T), numerical_second_derivative(x_test.T), y_cal[:,i], y_test[:,i]))
-
-
-
 
 
 
