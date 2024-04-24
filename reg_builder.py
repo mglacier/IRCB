@@ -21,7 +21,7 @@ from parallel_compute import feature_matrix2, feature_matrix2b
 from ml_models import ml_elr, ml_rf, ml_xgb
 from stats import fold_results_summary
 from sorting import regression_fit
-from hyp_opt import hyp_xgb_randomize
+from hyp_opt import hyp_xgb_randomize, hyp_rf_gridsearch
 
 
 
@@ -34,6 +34,7 @@ import time
 
 
 from matplotlib.figure import Figure
+import matplotlib as plt
 
 
 import numpy as np
@@ -123,6 +124,10 @@ class regression_model_builder:
         self.fit = None
         self.best_indices = None
         self.results = []
+        self.criteria = None
+        self.percentage = None
+        
+        
         # self.n_jobs = kwargs.get('n_jobs', -1)
         
         
@@ -166,6 +171,13 @@ class regression_model_builder:
     
     
     # =========================== Splitting into cal and test when test is not designated =========================== #
+    
+    
+
+        
+    
+    
+    
     
     
     def split_data(self, test_size = 0.2, random_state = 42):
@@ -220,19 +232,74 @@ class regression_model_builder:
         self.k_test_fm = []
         self.k_y_cal = []
         self.k_y_test = []
+        self.k_x_cal = []
+        self.k_x_test = []
+        
+        
+        temp_x_mat = self.x_comb[:,1:].T
+
 
         # Iterate over each split
-        for train_index, test_index in kf.split(self.comb_fm):
+        for train_index, test_index in kf.split(temp_x_mat):
 
-            self.k_cal_fm.append(self.comb_fm[train_index])
-            self.k_test_fm.append(self.comb_fm[test_index])
 
+            self.k_x_cal.append(temp_x_mat[train_index])
+            self.k_x_test.append(temp_x_mat[test_index])
+            
             self.k_y_cal.append(self.y_comb[train_index])
             self.k_y_test.append(self.y_comb[test_index])
-        
-        
+                
+            if self.comb_fm is not None:
+                
+                self.k_cal_fm.append(self.comb_fm[train_index])
+                self.k_test_fm.append(self.comb_fm[test_index])
+                
+            
         return self
         
+    def no_ircb(self, n_splits):
+        
+        """
+        Split the original combined data into n_splits folds for cross-validation,
+        appending the training and testing data for each fold directly to topfeat_cal and topfeat_test,
+        with each entry being a list of the same array repeated self.num_components times.
+    
+        Args:
+            n_splits (int): The number of splits for cross-validation.
+        """
+    
+        if self.model_type != 2.2:
+            raise ValueError("no_ircb method is only applicable for type 2.2 model (combined data).")
+    
+    
+    
+        # Create KFold object
+        kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
+    
+        # Reset or initialize the topfeat lists
+        self.topfeat_cal = []
+        self.topfeat_test = []
+    
+        # Transpose x_comb excluding the label column to align with comb_fm
+        temp_x_mat = self.x_comb[:, 1:].T  # Transpose for correct alignment
+    
+        # Iterate over each split
+        for train_index, test_index in kf.split(temp_x_mat):  # Use .T to operate on original row structure
+            # Extract training and testing sets for the current fold
+            # Note: After transposing back, use rows for splitting
+            x_cal_fold = temp_x_mat[train_index]
+            x_test_fold = temp_x_mat[test_index]
+    
+            # Create lists of the same array repeated self.num_components times for this fold
+            cal_fold_repeated = [x_cal_fold for _ in range(self.num_components)]
+            test_fold_repeated = [x_test_fold for _ in range(self.num_components)]
+    
+            # Append these lists to topfeat_cal and topfeat_test
+            self.topfeat_cal.append(cal_fold_repeated)
+            self.topfeat_test.append(test_fold_repeated)
+    
+        return self
+
     
 
     # =========================== Regression fitting for expanded x-block =========================== #
@@ -413,6 +480,30 @@ class regression_model_builder:
                     fold_result.append(hyp_xgb_randomize(self.topfeat_cal[j][i], self.k_y_cal[j][:,i], num_iterations, n_jobs = -1))
                 self.best_params_xgb.append(fold_result)
             
+        return self
+    
+    
+    
+    def opt_rf_gridsearch(self):
+        
+       
+        self.best_params_rf = []
+        
+        # For a simple test train split
+        if self.model_type == 1 or self.model_type == 2.1:
+            for i in range(0,self.num_components):
+                fold_result = []
+                fold_result.append(hyp_rf_gridsearch(self.topfeat_cal[0][i], self.y_cal[:,i], n_jobs = -1))
+                self.best_params_rf.append(fold_result)
+                    
+        # For k-fold splitting
+        elif self.model_type == 2.2:
+            for i in range(0,self.num_components):
+                fold_result = []
+                for j in range(self.n_splits):
+                    fold_result.append(hyp_rf_gridsearch(self.topfeat_cal[j][i], self.k_y_cal[j][:,i], n_jobs = -1))
+                self.best_params_rf.append(fold_result)
+        
         return self
         
     

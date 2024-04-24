@@ -15,12 +15,72 @@ Created by Matthew Glace, 2023
 
 
 from scipy.stats import randint
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 import xgboost as xgb
 from joblib import parallel_backend
 
 
 
+
+
+# Tunes hyperparameters for RF by minimizing RMSE of 5 fold CV using brute force gridsearch
+def hyp_rf_gridsearch(topfeat_cal, y_cal, n_jobs = -1):
+
+    """
+    selects the best hyperparameters for sklearn random forest using CV gridsearch
+    
+    Args:
+       
+        n_jobs (int, optional) = computational cores to use, defaults to -1 (all)
+        
+    """
+    
+    # param_grid = {
+    #     'n_estimators': [100, 150], 
+    #     'max_depth': [None, 10, 15],   
+    #     'min_samples_split': [2, 4], 
+    #     'min_samples_leaf': [1, 3],  
+    #     'max_features': ['sqrt', 0.5],
+    #     'bootstrap': [True, False], 
+    # }
+    
+    
+    param_grid = {
+        
+        'n_estimators': [25, 50, 100], 
+        'max_depth': [5, 10], 
+        'min_samples_split': [6, 8],  
+        'min_samples_leaf': [4, 6],  
+        'max_features': [0.25, 'sqrt'],  
+        'bootstrap': [True],  
+        
+    }
+    
+
+
+
+
+    # Create a Random Forest Regressor instance
+    rf_regressor = RandomForestRegressor(random_state=42)
+
+    # Perform grid search in parallel
+    with parallel_backend('loky', n_jobs=n_jobs):
+        grid_search = GridSearchCV(
+            estimator=rf_regressor, 
+            param_grid=param_grid, 
+            scoring='neg_root_mean_squared_error', 
+            cv=3, 
+            error_score='raise'
+            )
+
+        grid_search.fit(topfeat_cal, y_cal.ravel())
+
+
+    # Get the best parameters and best RMSE
+    best_params_rf = grid_search.best_params_
+    
+    return best_params_rf
 
 
 

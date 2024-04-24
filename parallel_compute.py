@@ -17,7 +17,6 @@ import numpy as np
 import concurrent.futures
 
 
-
 # Trapezoidal Summation from baseline
 def compute_area(data_slice):
     
@@ -56,8 +55,8 @@ def process_combination_batch(data, max_range, combinations, batch):
 # Generates feature matrix WITH multicore
 def feature_matrix2(data, max_range, batch_size = 20000):     
 
-    
-    # Get number of pixels in IR data
+
+    # Get number of pixels in IR data (p)
     pixel_count = data.shape[0]
     
     # Generate all combinations of start and stop indices for baseline correction
@@ -90,14 +89,12 @@ def feature_matrix2(data, max_range, batch_size = 20000):
         # Concatenate the results in the correct order to form cfm
         cfm = np.concatenate([future.result() for future in futures], axis=1)
     
-    
     # Store start and stop indices, and range for each combination
     fm_label = np.zeros((3, len(valid_combinations)))
     fm_label[0] = [combinations[i][0] for i in valid_combinations]
     fm_label[1] = [combinations[i][1] for i in valid_combinations]
 
     
-
     return cfm, fm_label
     
 
